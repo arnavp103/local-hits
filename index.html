@@ -16,18 +16,11 @@
       type="font/woff2"
       crossorigin
     />
-    <link
-      rel="preload"
-      href="/fonts/instrument-serif-latin-400-italic.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
     <link rel="stylesheet" href="/src/style.css" />
     <title>Local Hits — A neighbourhood field guide</title>
   </head>
   <body>
-    <a class="skip" href="#guide">Skip to nearby places</a>
+    <a class="skip" href="#query">Skip to place search</a>
     <header class="mast">
       <div class="wrap nav">
         <a href="/" class="brand" aria-label="Local Hits home"
@@ -39,67 +32,91 @@
       </div>
     </header>
     <main>
-      <section class="hero">
-        <div class="wrap spread">
-          <div class="intro">
-            <h1>Find your next<br /><em>local hit.</em></h1>
-            <p>
-              Food, nightlife, and sights nearby. Discover the story behind each
-              stop.
-            </p>
-            <form id="search">
+      <section class="finder" aria-labelledby="finder-title">
+        <div class="wrap">
+          <h1 id="finder-title">Within a <em>30-minute walk</em></h1>
+          <p>Find nearby food, nightlife and sights from any starting point.</p>
+          <div class="search-row">
+            <form id="search" role="search">
               <label class="sr" for="query"
-                >Search a city, neighbourhood, landmark or postcode</label
+                >Search by city, neighbourhood, landmark or postcode</label
               >
-              <span data-icon="search" aria-hidden="true"></span
-              ><input
-                id="query"
+              <span data-icon="search" aria-hidden="true"></span>
+              <input
                 type="search"
+                id="query"
                 autocomplete="off"
-                placeholder="City, neighbourhood, or postcode"
-                required
+                enterkeyhint="search"
+                placeholder="City, neighbourhood or landmark"
                 maxlength="160"
+                required
               />
               <button class="primary" type="submit" aria-label="Search places">
                 <span class="search-word">Search</span
-                ><span data-icon="arrow" aria-hidden="true"></span>
+                ><span data-icon="arrow"></span>
               </button>
+              <ul
+                id="choices"
+                role="listbox"
+                aria-label="Matching locations"
+                hidden
+              ></ul>
             </form>
-            <div id="choices" hidden></div>
             <button class="locate" id="locate">
               <span data-icon="locate" aria-hidden="true"></span>Use my location
             </button>
-            <span id="search-status" role="status"></span>
           </div>
-          <button
-            class="postcard"
-            id="edition"
-            aria-label="Explore the Toronto edition"
+          <div id="search-status" role="status"></div>
+          <noscript
+            >Enable JavaScript to search, filter, and explore the nearby
+            guide.</noscript
           >
-            <span class="stamp-frame"
-              ><img
-                src="/photos/toronto.webp"
-                alt=""
-                width="340"
-                height="165"
-                fetchpriority="high"
-              /><span class="caption"
-                ><i>Toronto</i><small>ONTARIO, CA</small></span
-              ></span
-            >
-            <span class="postmark" aria-hidden="true"
-              ><b>LOCAL HITS</b><i>✧</i><small>TORONTO</small></span
-            >
+        </div>
+      </section>
+      <section
+        class="wrap starters"
+        id="starters"
+        aria-labelledby="start-heading"
+      >
+        <h2 id="start-heading">Try a starting point</h2>
+        <div class="starter-list">
+          <button data-start="london">
+            <img
+              src="/photos/trafalgar-square.webp"
+              width="88"
+              height="74"
+              alt=""
+            /><span><small>London</small><strong>Trafalgar Square</strong></span
+            ><span data-icon="arrow"></span>
+          </button>
+          <button data-start="tokyo">
+            <img
+              src="/photos/senso-ji.webp"
+              width="88"
+              height="74"
+              alt=""
+            /><span><small>Tokyo</small><strong>Sensō-ji</strong></span
+            ><span data-icon="arrow"></span>
+          </button>
+          <button data-start="toronto">
+            <img
+              src="/photos/gooderham-building.webp"
+              width="88"
+              height="74"
+              alt=""
+            /><span
+              ><small>Toronto</small><strong>Gooderham Building</strong></span
+            ><span data-icon="arrow"></span>
           </button>
         </div>
       </section>
-      <section class="guide wrap" id="guide" aria-labelledby="area-name">
+      <section class="guide wrap" id="guide" aria-labelledby="area-name" hidden>
         <div class="section-line">
           <div>
             <span class="section-label"
               ><span class="green-dot"></span> NEARBY GUIDE</span
             >
-            <h2 id="area-name" tabindex="-1">Toronto</h2>
+            <h2 id="area-name" tabindex="-1">Nearby</h2>
           </div>
           <div class="unit" role="group" aria-label="Distance units">
             <button id="km" aria-pressed="true">km</button
@@ -118,10 +135,6 @@
         <div id="service" role="status"></div>
         <div id="cards" class="cards"></div>
         <button id="more" hidden>Show more places</button>
-        <noscript
-          >Enable JavaScript to search, filter, and explore the nearby
-          guide.</noscript
-        >
       </section>
     </main>
     <footer>
@@ -146,10 +159,10 @@
         <button id="close" aria-label="Close dialog">×</button>
       </div>
       <p>
-        Local Hits finds places with a Wikipedia story within a five-kilometre
-        radius. Toronto opens with an edited selection. Searching an area adds
-        up to 60 nearby English Wikipedia pages, ordered by straight-line
-        distance.
+        Local Hits finds up to 60 nearby English Wikipedia pages and adds edited
+        notes where available. Walk times use straight-line distance at 4.8 km/h
+        with a 25% allowance for street layout. The 30-minute cutoff is an
+        estimate. Bridges, hills and crossings can change the actual route.
       </p>
       <p>
         Food, Nightlife and Sights are quick filters. Wikipedia coverage varies
@@ -157,7 +170,8 @@
         opening hours before a visit.
       </p>
       <p>
-        Place names go to <a href="https://photon.komoot.io/">Photon</a>, using
+        As you type, search suggestions come from
+        <a href="https://photon.komoot.io/">Photon</a>, using
         <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>
         data. If you choose “Use my location”, coordinates go to Photon and
         Wikipedia to find nearby places.
@@ -171,10 +185,7 @@
       </p>
       <details id="photo-credits">
         <summary>Photographs and licences</summary>
-        <p>
-          Photos are resized, cropped in the layout and converted to WebP. The
-          Toronto postcard also uses a colour tint.
-        </p>
+        <p>Photos are resized, cropped in the layout and converted to WebP.</p>
         <ul id="credit-list"></ul>
       </details>
     </dialog>

@@ -5,6 +5,8 @@ import {
   distance,
   formatDistance,
   nearby,
+  radius,
+  walkMinutes,
   toronto,
   unitFor,
   type Place,
@@ -54,7 +56,10 @@ test('Toronto overrides matching live pages, filters to radius, and sorts by dis
     article: 'https://en.wikipedia.org/wiki/Other',
   }
   const places = nearby(toronto, curated, [duplicate, outOfTown])
-  assert.equal(places.length, curated.length)
+  assert.equal(
+    places.length,
+    curated.filter((p) => distance(toronto, p) <= radius).length,
+  )
   assert.ok(places.includes(curated[0]) && !places.includes(duplicate))
   const distances = places.map((p) => distance(toronto, p))
   assert.deepEqual(
@@ -80,4 +85,15 @@ test('classifies the subject of the article, rather than landmarks in its title'
     classify('Charles I', 'Equestrian statue in London', '').tags,
     ['Sights'],
   )
+})
+
+test('the 30-minute walk uses the same area in both unit systems', () => {
+  assert.equal(walkMinutes(radius), 30)
+  assert.equal(walkMinutes(0.96), 15)
+  const place = data[0] as Place
+  const origin = { lat: 0, lon: 0 }
+  // At the equator these longitudes are about 1.90 km and 1.95 km away.
+  const inside = { ...place, lat: 0, lon: 0.0171 }
+  const outside = { ...place, article: 'other', lat: 0, lon: 0.0175 }
+  assert.deepEqual(nearby(origin, [], [outside, inside]), [inside])
 })

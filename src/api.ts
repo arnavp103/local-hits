@@ -27,6 +27,8 @@ interface Feature {
   geometry: { coordinates: [number, number] }
   properties: {
     name?: string
+    street?: string
+    housenumber?: string
     city?: string
     district?: string
     state?: string
@@ -37,7 +39,13 @@ interface Feature {
 }
 function areaFrom(f: Feature): Area {
   const p = f.properties
-  const labels = [p.name || p.postcode || p.city, p.city || p.state, p.country]
+  const street = [p.housenumber, p.street].filter(Boolean).join(' ')
+  const labels = [
+    p.name || street || p.postcode || p.city,
+    p.city || p.district,
+    p.state,
+    p.country,
+  ]
   return {
     name: [...new Set(labels.filter(Boolean))].join(', '),
     country: p.countrycode || '',
@@ -97,7 +105,7 @@ export async function wikiNearby(
       ...base,
       list: 'geosearch',
       gscoord: point.lat.toFixed(5) + '|' + point.lon.toFixed(5),
-      gsradius: String(radius * 1000),
+      gsradius: String(Math.round(radius * 1000)),
       gslimit: '60',
       gsnamespace: '0',
     },

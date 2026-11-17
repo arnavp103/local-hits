@@ -84,10 +84,17 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   {
-    "place": "Toronto",
-    "artist": "Dillan Payne",
-    "source": "https://commons.wikimedia.org/wiki/File:Toronto_Skyline_from_Snake_Island,_September_11_2026_(01).jpg",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+    "place": "Trafalgar Square",
+    "artist": "Diliff",
+    "source": "https://commons.wikimedia.org/wiki/File:Trafalgar_Square,_London_2_-_Jun_2009.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  {
+    "place": "Sensō-ji",
+    "artist": "Akonnchiroll",
+    "source": "https://commons.wikimedia.org/wiki/File:Sensoji_2023.jpg",
+    "license": "CC0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en"
   }
 ]
