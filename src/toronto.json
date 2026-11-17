@@ -1,0 +1,165 @@
+[
+  {
+    "title": "St. Lawrence Market",
+    "article": "https://en.wikipedia.org/wiki/St._Lawrence_Market_South",
+    "lat": 43.64888889,
+    "lon": -79.37166667,
+    "tags": ["Food", "Sights"],
+    "kind": "Public market",
+    "brief": "A piece of Toronto’s 1845 city hall is tucked inside the south market building.",
+    "note": "The red-brick market that opened in 1902 incorporated the earlier city hall. Look up from the stalls to see where the civic building meets the market shed.",
+    "photo": "/photos/st-lawrence-market.webp"
+  },
+  {
+    "title": "Gooderham Building",
+    "article": "https://en.wikipedia.org/wiki/Gooderham_Building",
+    "lat": 43.648366,
+    "lon": -79.374284,
+    "tags": ["Sights"],
+    "kind": "Architecture",
+    "brief": "Front and Wellington meet at such a sharp angle that this 1892 office building comes to a red-brick point.",
+    "note": "Walk around the back toward Berczy Park. The mural on the flat west wall plays a perspective trick with the building across the street.",
+    "photo": "/photos/gooderham-building.webp"
+  },
+  {
+    "title": "Horseshoe Tavern",
+    "article": "https://en.wikipedia.org/wiki/Horseshoe_Tavern",
+    "lat": 43.649081,
+    "lon": -79.395889,
+    "tags": ["Nightlife"],
+    "kind": "Live music",
+    "brief": "This Queen West room has been putting Toronto bands on stage since 1947.",
+    "note": "Country acts first made the Horseshoe a destination. Its later punk and rock shows made the same small room a fixture of a different Toronto music scene.",
+    "photo": "/photos/horseshoe-tavern.webp"
+  },
+  {
+    "title": "Massey Hall",
+    "article": "https://en.wikipedia.org/wiki/Massey_Hall",
+    "lat": 43.65416667,
+    "lon": -79.37902778,
+    "tags": ["Nightlife", "Sights"],
+    "kind": "Concert hall",
+    "brief": "Generations of musicians have played this 1894 hall, prized for the sound that carries from its stage to its balconies.",
+    "note": "For much of the twentieth century, Massey Hall was home to the Toronto Symphony Orchestra. Its concert history also runs through jazz, folk and rock.",
+    "photo": "/photos/massey-hall.webp"
+  },
+  {
+    "title": "El Mocambo",
+    "article": "https://en.wikipedia.org/wiki/El_Mocambo",
+    "lat": 43.657487,
+    "lon": -79.400177,
+    "tags": ["Nightlife"],
+    "kind": "Live music",
+    "brief": "The Rolling Stones slipped into this Spadina club for two surprise shows in 1977.",
+    "note": "The club’s neon palm tree marks a stage that has been part of Toronto’s music scene since 1948.",
+    "photo": "/photos/el-mocambo.webp"
+  },
+  {
+    "title": "Maple Leaf Gardens",
+    "article": "https://en.wikipedia.org/wiki/Maple_Leaf_Gardens",
+    "lat": 43.66222222,
+    "lon": -79.38027778,
+    "tags": ["Sights"],
+    "kind": "Architecture",
+    "brief": "Hockey once filled this entire Carlton Street building. Today an ice rink shares its shell with a grocery store.",
+    "note": "The Maple Leafs moved into the Gardens in 1931. The old arena also hosted concerts, including appearances by the Beatles.",
+    "photo": "/photos/maple-leaf-gardens.webp"
+  },
+  {
+    "title": "Art Gallery of Ontario",
+    "article": "https://en.wikipedia.org/wiki/Art_Gallery_of_Ontario",
+    "lat": 43.65361111,
+    "lon": -79.39277778,
+    "tags": ["Sights"],
+    "kind": "Art museum",
+    "brief": "Frank Gehry’s glass-and-timber frontage curves along Dundas Street like the hull of a ship.",
+    "note": "Gehry grew up in Toronto. His expansion brought the long Galleria Italia to the street-facing side of the museum.",
+    "photo": "/photos/art-gallery-of-ontario.webp"
+  },
+  {
+    "title": "CN Tower",
+    "article": "https://en.wikipedia.org/wiki/CN_Tower",
+    "lat": 43.64255556,
+    "lon": -79.38708333,
+    "tags": ["Sights"],
+    "kind": "Observation tower",
+    "brief": "Toronto’s skyline owes its tallest landmark to a railway company trying to improve broadcast reception.",
+    "note": "Canadian National built the communications tower on former railway land. It reached its full height of just over 553 metres before opening to visitors in 1976."
+  },
+  {
+    "title": "St. James Cathedral",
+    "article": "https://en.wikipedia.org/wiki/Cathedral_Church_of_St._James_(Toronto)",
+    "lat": 43.65027778,
+    "lon": -79.37388889,
+    "tags": ["Sights"],
+    "kind": "Architecture",
+    "brief": "This Gothic Revival cathedral is the fourth church to stand on its corner of King Street.",
+    "note": "The parish dates to 1797. Work on the present church began in 1850 and services started in 1853.",
+    "photo": "/photos/st-james-cathedral.webp"
+  },
+  {
+    "title": "Distillery District",
+    "article": "https://en.wikipedia.org/wiki/Distillery_District",
+    "lat": 43.6503,
+    "lon": -79.3596,
+    "tags": ["Sights"],
+    "kind": "Historic district",
+    "brief": "A former whisky distillery left behind a whole neighbourhood of brick factories and cobbled lanes.",
+    "note": "The Gooderham and Worts works once occupied this site. Its surviving industrial buildings now house galleries, shops and restaurants.",
+    "photo": "/photos/distillery-district.webp"
+  },
+  {
+    "title": "Kensington Market",
+    "article": "https://en.wikipedia.org/wiki/Kensington_Market",
+    "lat": 43.65477222,
+    "lon": -79.40067778,
+    "tags": ["Sights"],
+    "kind": "Neighbourhood",
+    "brief": "Kensington’s market stretches through streets of houses turned into shops, rather than a single market hall.",
+    "note": "Successive immigrant communities shaped the area’s street markets. The neighbourhood became a National Historic Site in 2006.",
+    "photo": "/photos/kensington-market.webp"
+  },
+  {
+    "title": "Sneaky Dee’s",
+    "article": "https://en.wikipedia.org/wiki/Sneaky_Dee's",
+    "lat": 43.656295,
+    "lon": -79.407431,
+    "tags": ["Food", "Nightlife"],
+    "kind": "Tex-Mex & music",
+    "brief": "A Tex-Mex restaurant and a concert room share this corner of College and Bathurst.",
+    "note": "Sneaky Dee’s opened farther north on Bloor in 1987, then moved to this intersection in 1990.",
+    "photo": "/photos/sneaky-dee-s.webp"
+  },
+  {
+    "title": "Lakeview Restaurant",
+    "article": "https://en.wikipedia.org/wiki/Lakeview_Restaurant",
+    "lat": 43.6496,
+    "lon": -79.42036,
+    "tags": ["Food"],
+    "kind": "Diner",
+    "brief": "This Dundas Street diner kept late hours for workers coming off shifts at a nearby factory.",
+    "note": "The Lakeview dates to 1932. Its old-fashioned diner interior later became a setting for film and television shoots."
+  },
+  {
+    "title": "Standard Theatre",
+    "article": "https://en.wikipedia.org/wiki/Standard_Theatre_(Toronto)",
+    "lat": 43.65321,
+    "lon": -79.39776,
+    "tags": ["Sights"],
+    "kind": "Historic theatre",
+    "brief": "The corner building at Dundas and Spadina began as a Yiddish theatre and later housed the Victory Burlesque.",
+    "note": "Look at the old theatre exterior from the intersection. The Victory closed in 1975; the building has since housed other businesses.",
+    "former": true,
+    "photo": "/photos/standard-theatre.webp"
+  },
+  {
+    "title": "Barberian’s Steak House",
+    "article": "https://en.wikipedia.org/wiki/Barberian's_Steak_House",
+    "lat": 43.6576,
+    "lon": -79.3822,
+    "tags": ["Food"],
+    "kind": "Steakhouse",
+    "brief": "A cottage on Elm Street became a steakhouse with a two-storey wine cellar beneath it.",
+    "note": "Harry Barberian opened the restaurant in 1959. The family collection inside includes paintings by members of the Group of Seven."
+  }
+]
