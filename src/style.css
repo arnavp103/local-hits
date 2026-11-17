@@ -130,27 +130,65 @@ svg {
 .about span {
   font-size: 1.05rem;
 }
-.hero {
-  background-color: #f2f1e5;
+.finder {
   border-bottom: 1px solid var(--line);
-  background-image:
-    linear-gradient(90deg, transparent 49.5%, #82907916 50%, transparent 50.5%),
-    linear-gradient(#81907717 1px, transparent 1px),
-    linear-gradient(90deg, #81907717 1px, transparent 1px);
-  background-size:
-    100% 100%,
-    24px 24px,
-    24px 24px;
+  background: #f0f2e8;
+  padding-block: clamp(19px, 3vw, 34px);
 }
-.spread {
-  display: grid;
-  grid-template-columns: 1.35fr 0.85fr;
+.search-row {
+  display: flex;
   align-items: center;
-  gap: 4%;
-  padding-block: 38px 30px;
+  gap: 20px;
 }
-.intro {
-  max-width: 590px;
+.starters {
+  padding-block: 32px 48px;
+}
+.starters h2 {
+  font-size: 30px;
+  margin-bottom: 14px;
+}
+.starter-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.starter-list button {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 12px 8px 8px;
+  background: #f2e8d8;
+}
+.starter-list button:nth-child(2) {
+  background: #ece6f1;
+}
+.starter-list button:nth-child(3) {
+  background: #e7edde;
+}
+.starter-list button:hover {
+  border-color: var(--pine);
+}
+.starter-list img {
+  object-fit: cover;
+  width: 64px;
+  height: 60px;
+  border-radius: 7px;
+}
+.starter-list small {
+  display: block;
+  color: var(--muted);
+}
+.starter-list strong {
+  font:
+    24px/1.1 Instrument,
+    Georgia,
+    serif;
+}
+.starter-list [data-icon] {
+  margin-left: auto;
 }
 h1,
 h2,
@@ -160,24 +198,22 @@ p {
 }
 h1,
 h2,
-h3,
-.caption i {
+h3 {
   font-family: Instrument, Georgia, serif;
   font-weight: 400;
 }
 h1 {
-  white-space: nowrap;
-  font-size: clamp(64px, 6.8vw, 98px);
-  letter-spacing: -0.048em;
-  line-height: 0.91;
+  font-size: clamp(35px, 4vw, 52px);
+  letter-spacing: -0.04em;
+  line-height: 1.06;
 }
 h1 em {
   color: var(--pine);
 }
-.intro > p {
-  color: #455349;
-  font-size: 0.96rem;
-  margin: 16px 0 19px;
+.finder p {
+  color: var(--muted);
+  margin: 6px 0 16px;
+  font-size: 0.94rem;
 }
 #search {
   display: flex;
@@ -187,7 +223,10 @@ h1 em {
   background: #fffef8;
   padding: 5px 5px 5px 14px;
   border-radius: 10px;
-  max-width: 540px;
+  position: relative;
+  min-width: 0;
+  flex: 1;
+  max-width: 680px;
   box-shadow: 0 2px 0 #42503b19;
 }
 #search input {
@@ -216,8 +255,7 @@ h1 em {
   border-radius: 6px;
   font-weight: 600;
 }
-.primary:hover,
-.postcard:hover .stamp-frame {
+.primary:hover {
   filter: brightness(0.94);
 }
 .locate {
@@ -231,110 +269,47 @@ h1 em {
   text-underline-offset: 3px;
   font-weight: 600;
 }
-#search-status {
+#search-status:not(:empty) {
   font-size: 0.84rem;
-  display: inline-block;
-  margin-inline-start: 10px;
+  margin-top: 7px;
 }
 #choices {
-  max-width: 540px;
-  margin-top: 6px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--paper);
+  position: absolute;
+  z-index: 5;
+  inset: calc(100% + 7px) -1px auto;
+  margin: 0;
+  padding: 4px;
+  max-height: min(48dvh, 340px);
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid #9ca998;
+  border-radius: 10px;
+  background: #fffef9;
+  box-shadow: 0 8px 24px #213b2929;
 }
-#choices button {
+#choices li {
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#choices strong,
+#choices small {
   display: block;
-  width: 100%;
-  text-align: left;
-  padding: 10px 14px;
-  background: none;
-  border: 0;
 }
-#choices button:hover,
-#choices button:focus-visible {
-  background: #e6edda;
+#choices small {
+  color: var(--muted);
 }
-.postcard {
-  position: relative;
-  justify-self: center;
-  transform: rotate(6deg);
-  width: min(82%, 320px);
-  background: none;
-  border: 0;
-  padding: 0;
-  filter: drop-shadow(1px 7px 4px #23372227);
-  margin-right: 18px;
+#choices li:hover,
+#choices [aria-selected='true'],
+#choices [data-combobox-option-default] {
+  background: #e5ecda;
 }
-.stamp-frame {
-  display: block;
-  background: #e6e6be;
-  padding: 15px 15px 11px;
-  color: #214533;
-  mask:
-    linear-gradient(#000 0 0) center / calc(100% - 12px) calc(100% - 12px)
-      no-repeat,
-    radial-gradient(circle at 6px 0, transparent 3px, #000 3.6px) 0 0/12px 52%
-      repeat-x,
-    radial-gradient(circle at 6px 100%, transparent 3px, #000 3.6px) 0 100%/12px
-      52% repeat-x;
-}
-.stamp-frame img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1.95;
-  object-fit: cover;
-  filter: grayscale(1) contrast(1.18);
-  mix-blend-mode: multiply;
-}
-.caption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 5px;
-  border-top: 2px solid var(--pine);
-  padding-top: 4px;
-}
-.caption i {
-  font-size: 38px;
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-}
-.caption small,
 .section-label,
 .kind,
-.distance,
-.postmark small,
-.postmark b {
+.distance {
   font-family: ui-monospace, monospace;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.09em;
-}
-.postmark {
-  position: absolute;
-  bottom: -22px;
-  right: -29px;
-  width: 80px;
-  height: 80px;
-  border: 3px double #835544;
-  color: #835544;
-  border-radius: 50%;
-  display: grid;
-  place-content: center;
-  transform: rotate(-19deg);
-  line-height: 1.1;
-  background: #f8f4df40;
-}
-.postmark b,
-.postmark small {
-  font-size: 8px;
-}
-.postmark i {
-  font-style: normal;
-  font-size: 28px;
 }
 .guide {
   padding-block: 30px 60px;
@@ -541,6 +516,9 @@ summary {
 .card details p {
   margin: 7px 0;
 }
+.metadata {
+  flex-wrap: wrap;
+}
 .card-links {
   border-top: 1px solid #e0e3d8;
   margin-top: 16px;
@@ -635,14 +613,15 @@ dialog details {
   .cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .spread {
-    gap: 18px;
+  .starter-list {
+    gap: 8px;
   }
-  .postcard {
-    width: 84%;
+  .starter-list img {
+    width: 44px;
+    height: 48px;
   }
-  .caption i {
-    font-size: 30px;
+  .starter-list strong {
+    font-size: 21px;
   }
 }
 @media (max-width: 600px) {
@@ -662,45 +641,27 @@ dialog details {
   .about {
     font-size: 0.78rem;
   }
-  .spread {
-    position: relative;
+  .search-row {
     display: block;
-    padding-block: 25px 13px;
   }
-  .intro {
-    position: relative;
+  .finder {
+    padding: 18px 0 6px;
   }
-  .intro h1 {
-    font-size: clamp(54px, 13.7vw, 77px);
-    max-width: 66%;
+  .finder p {
+    margin: 5px 0 13px;
   }
-  .intro > p {
-    max-width: 36ch;
-    font-size: 0.9rem;
-    line-height: 1.45;
-    margin: 13px 0 15px;
+  .starters {
+    padding-block: 22px 28px;
   }
-  .postcard {
-    position: absolute;
-    right: 7px;
-    top: 37px;
-    width: clamp(77px, 23vw, 137px);
-    margin: 0;
+  .starter-list {
+    grid-template-columns: 1fr;
   }
-  .stamp-frame {
-    padding: 7px 7px 6px;
+  .starter-list img {
+    width: 60px;
+    height: 50px;
   }
-  .caption i {
-    font-size: 18px;
-  }
-  .caption small,
-  .postmark {
-    display: none;
-  }
-  .caption {
-    border-width: 1px;
-    padding: 1px 0 0;
-    justify-content: center;
+  .starter-list strong {
+    font-size: 24px;
   }
   #search {
     gap: 8px;

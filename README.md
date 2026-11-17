@@ -1,6 +1,6 @@
 # Local Hits
 
-A client-side neighbourhood field guide for food, nightlife and sights. It opens immediately with 15 edited Toronto entries. Search a city, landmark, neighbourhood or postcode, or use device location to explore elsewhere.
+A client-side neighbourhood field guide for food, nightlife and sights. It works worldwide, with extra editorial coverage in Toronto. Search a city, landmark, neighbourhood or postcode, or use device location to explore elsewhere.
 
 ![Local Hits on desktop and mobile](docs/preview.webp)
 
@@ -28,11 +28,11 @@ Wrangler serves the Vite output in `dist/` through Workers Static Assets. The ap
 
 ## How nearby discovery works
 
-- The opening Toronto edition is static. Its distances are measured from Berczy Park. Each entry in `src/toronto.json` has coordinates, an article, category tags, a short explanation and a field note.
-- Place search uses Photon and OpenStreetMap. Searches are submitted explicitly. The browser asks for location permission only after the visitor presses the location button.
-- An area search asks English Wikipedia for up to 60 geocoded pages within 5 km, then fetches introductions in batches of 20. Each batch becomes available as it arrives. Results are merged by article, with Toronto editorial entries taking precedence.
+- Toronto includes 15 static editorial entries. Their distances are measured from the visitor’s chosen starting point. Each entry in `src/toronto.json` has coordinates, an article, category tags, a short explanation and a field note.
+- Place search uses Photon and OpenStreetMap. After two characters, a debounced autocomplete offers matching places. Use the arrow keys and Enter or tap a suggestion. The browser asks for location permission only after the visitor presses the location button.
+- An area search asks English Wikipedia for up to 60 geocoded pages within an estimated 30-minute walk (1.92 km straight-line at 4.8 km/h, allowing 25% extra distance for street layout), then fetches introductions in batches of 20. Each batch becomes available as it arrives. Results are merged by article, with Toronto editorial entries taking precedence.
 - Live categories are inferred from the article title, short description and introduction. Unclassified pages remain under All. Former venues with evidence of a surviving landmark appear under Sights. Coverage and venue status depend on the source article.
-- Visitors can switch tabs instantly. Distances are straight-line measurements with a country-based default unit and a manual override. Raw device coordinates and searches are used for lookup and are not persisted by the app.
+- Visitors can switch tabs instantly. Cards show estimated walking minutes and straight-line distances with a country-based default unit and a manual override. Raw device coordinates and searches are used for lookup and are not persisted by the app.
 - The public lookup services can be slow or unavailable. Existing entries stay usable and visitors can retry failed Wikipedia lookups.
 
 [Follow-up on restaurants mentioned inside other articles](https://github.com/arnavp103/local-hits/issues/1)

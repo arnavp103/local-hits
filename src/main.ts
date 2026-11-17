@@ -1,9 +1,11 @@
-import { wikiNearby, reverse, searchAreas } from './api.ts'
+import { attachSearch } from './search.ts'
+import { wikiNearby, reverse } from './api.ts'
 import {
   distance,
   formatDistance,
   nearby,
-  radius,
+  walkLimitMinutes,
+  walkMinutes,
   toronto,
   unitFor,
   type Area,
@@ -42,7 +44,7 @@ function link(text: string, href: string) {
 }
 
 let area = toronto
-let places = nearby(area, curated, [])
+let places: Place[] = []
 let filter: Filter = 'All'
 let unit: Unit = unitFor(area.country)
 let preferredUnit: Unit | undefined
@@ -53,7 +55,7 @@ let lookup = new AbortController()
 let results = new AbortController()
 const cards = select('cards')
 const status = select('search-status')
-const choices = select('choices')
+const cardCache = new Map<Place, HTMLElement>()
 const guide = select('guide')
 const query = select<HTMLInputElement>('query')
 const emptyFilter = () => {
@@ -61,6 +63,10 @@ const emptyFilter = () => {
   select('tabs').querySelector('button')?.focus()
 }
 
+function travelLabel(place: Place) {
+  const km = distance(area, place)
+  return '≈ ' + walkMinutes(km) + ' min walk · ' + formatDistance(km, unit)
+}
 function card(p: Place) {
   const article = node('article', '', 'card')
   if (p.photo) {
@@ -74,7 +80,8 @@ function card(p: Place) {
   const body = node('div', '', 'card-body')
   const meta = node('div', '', 'metadata')
   const dist = node('span', '', 'distance')
-  dist.append(symbol('pin'), formatDistance(distance(area, p), unit))
+  dist.title = 'Estimated walking time and straight-line distance'
+  dist.textContent = travelLabel(p)
   meta.append(
     node('span', p.kind, 'kind ' + (p.tags[0]?.toLowerCase() || '')),
     dist,
@@ -122,10 +129,22 @@ function render() {
   select('count').textContent =
     visible.length +
     (visible.length === 1 ? ' place' : ' places') +
-    ' within ' +
-    formatDistance(radius, unit) +
-    ' · Nearest first'
-  cards.replaceChildren(...visible.slice(0, limit).map(card))
+    ' · Up to about ' +
+    walkLimitMinutes +
+    ' min on foot · Nearest first'
+  const shown = visible.slice(0, limit).map((place) => {
+    let el = cardCache.get(place)
+    if (!el) {
+      el = card(place)
+      cardCache.set(place, el)
+    }
+    return el
+  })
+  for (const [index, article] of shown.entries()) {
+    if (cards.children[index] !== article)
+      cards.insertBefore(article, cards.children[index] || null)
+  }
+  while (cards.children.length > shown.length) cards.lastElementChild!.remove()
   if (visible.length === 0 && !loading && !loadFailed) {
     const box = node('div', '', 'empty')
     box.append(
@@ -162,35 +181,33 @@ select('more').onclick = () => {
 }
 for (const u of ['km', 'mi'] as const)
   select(u).onclick = () => {
-    unit = preferredUnit = u
+    preferredUnit = u
+    updateUnit(u)
     render()
   }
 
-function clearChoices() {
-  choices.replaceChildren()
-  choices.hidden = true
+function updateUnit(next: Unit) {
+  unit = next
+  for (const [place, el] of cardCache)
+    el.querySelector<HTMLElement>('.distance')!.textContent = travelLabel(place)
 }
-function beginLookup() {
-  lookup.abort()
-  lookup = new AbortController()
-  clearChoices()
-  status.textContent = ''
-  return lookup.signal
-}
-function setArea(next: Area, scroll = true) {
+function setArea(next: Area, focus = true) {
   results.abort()
   results = new AbortController()
   area = next
+  cardCache.clear()
+  select('starters').hidden = true
+  guide.hidden = false
+  query.value = next.name
   places = nearby(next, curated, [])
   limit = 12
   loading = true
   loadFailed = false
   unit = preferredUnit || unitFor(next.country)
   status.textContent = ''
-  clearChoices()
   select('service').textContent = 'Finding nearby Wikipedia places…'
   render()
-  if (scroll) guide.scrollIntoView()
+  if (focus) select('area-name').focus({ preventScroll: true })
   const signal = results.signal
   void wikiNearby(next, signal, (partial) => {
     if (!signal.aborted) {
@@ -210,7 +227,7 @@ function setArea(next: Area, scroll = true) {
         ? 'Showing available places. Wikipedia could not load additional results.'
         : 'Wikipedia could not load places for this area.'
       const retry = node('button', 'Retry')
-      retry.onclick = () => setArea(next, false)
+      retry.onclick = () => setArea(area, false)
       select('service').replaceChildren(message, retry)
     })
     .finally(() => {
@@ -220,65 +237,46 @@ function setArea(next: Area, scroll = true) {
       }
     })
 }
-select('edition').onclick = () => {
-  beginLookup()
-  results.abort()
-  area = toronto
-  unit = preferredUnit || 'km'
-  loading = false
-  loadFailed = false
-  places = nearby(area, curated, [])
-  select('service').textContent = ''
-  query.value = ''
-  setFilter('All')
-  guide.scrollIntoView()
+const dismissSearch = attachSearch(select('search'), status, chooseArea)
+function chooseArea(next: Area) {
+  lookup.abort()
+  dismissSearch()
+  filter = 'All'
+  setArea(next)
 }
-query.addEventListener('input', beginLookup)
-query.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') beginLookup()
+query.addEventListener('input', () => lookup.abort())
+query.addEventListener('focus', () => {
+  if (!guide.hidden && query.value === area.name) query.select()
 })
-select('search').onsubmit = async (e) => {
-  e.preventDefault()
-  const term = query.value.trim()
-  if (!term) {
-    query.focus()
-    return
-  }
-  const signal = beginLookup()
-  if (/^toronto(?:,? (?:on|ontario|canada))?$/i.test(term)) {
-    setArea(toronto)
-    return
-  }
-  status.textContent = 'Searching…'
-  try {
-    const found = await searchAreas(term, signal)
-    if (signal.aborted) return
-    if (found.length === 1) {
-      setArea(found[0])
-      return
-    }
-    status.textContent = found.length
-      ? 'Choose a matching location.'
-      : 'No matches. Try a city or postcode.'
-    for (const match of found) {
-      const btn = node('button', match.name)
-      btn.onclick = () => {
-        query.value = match.name
-        setArea(match)
-        select('area-name').focus({ preventScroll: true })
-      }
-      choices.append(btn)
-    }
-    choices.hidden = !found.length
-    choices.querySelector('button')?.focus()
-  } catch {
-    if (!signal.aborted)
-      status.textContent =
-        'Place search is unavailable. Try again or explore Toronto.'
-  }
+const starts: Record<string, Area> = {
+  london: {
+    name: 'Trafalgar Square, London',
+    country: 'GB',
+    lat: 51.50806,
+    lon: -0.12806,
+  },
+  tokyo: {
+    name: 'Sensō-ji, Tokyo',
+    country: 'JP',
+    lat: 35.71472,
+    lon: 139.79675,
+  },
+  toronto: {
+    ...toronto,
+    name: 'Gooderham Building, Toronto',
+    lat: 43.648366,
+    lon: -79.374284,
+  },
 }
+for (const button of document.querySelectorAll<HTMLButtonElement>(
+  '[data-start]',
+))
+  button.onclick = () => chooseArea(starts[button.dataset.start!])
 select('locate').onclick = () => {
-  const signal = beginLookup()
+  dismissSearch()
+  lookup.abort()
+  lookup = new AbortController()
+  const signal = lookup.signal
   if (!navigator.geolocation) {
     status.textContent = 'Location is unavailable. Search by place name.'
     return
@@ -291,13 +289,18 @@ select('locate').onclick = () => {
         lat: position.coords.latitude,
         lon: position.coords.longitude,
       }
-      let next: Area = { ...point, name: 'Your location', country: '' }
+      filter = 'All'
+      setArea({ ...point, name: 'Your location', country: '' })
       try {
-        next = await reverse(point, signal)
+        const next = await reverse(point, signal)
+        if (signal.aborted) return
+        area = next
+        query.value = next.name
+        updateUnit(preferredUnit || unitFor(next.country))
+        render()
       } catch {
-        /* Coordinates still work without a locality name. */
+        // The coordinates still work when a local name is unavailable.
       }
-      if (!signal.aborted) setArea(next)
     },
     (error) => {
       if (!signal.aborted)
@@ -330,4 +333,3 @@ for (const c of credits) {
 }
 for (const el of document.querySelectorAll<HTMLElement>('[data-icon]'))
   el.append(symbol(el.dataset.icon as Icon))
-render()

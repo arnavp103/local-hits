@@ -25,7 +25,17 @@ export const toronto: Area = {
   lat: 43.6477,
   lon: -79.3751,
 }
-export const radius = 5
+export const walkLimitMinutes = 30
+const walkingKmPerMinute = 4.8 / 60
+const streetDistanceFactor = 1.25
+export const radius =
+  (walkLimitMinutes * walkingKmPerMinute) / streetDistanceFactor
+export function walkMinutes(straightLineKm: number) {
+  return Math.max(
+    1,
+    Math.round((straightLineKm * streetDistanceFactor) / walkingKmPerMinute),
+  )
+}
 export function distance(a: Point, b: Point) {
   const rad = Math.PI / 180
   const h =
