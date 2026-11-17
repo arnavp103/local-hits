@@ -15,28 +15,16 @@ pnpm dev
 
 Run `pnpm test` for regression tests, `pnpm build` for type checking and the production build, and `pnpm preview` to inspect the built site.
 
-## Deploy to Cloudflare Pages
+## Deploy on Cloudflare Workers
 
-1. Open the [Cloudflare dashboard](https://dash.cloudflare.com/). Go to **Workers & Pages → Create application → Pages → Connect to Git**.
-2. Choose **GitHub**, authorize access to **arnavp103/local-hits**, select the repository and begin setup.
-3. Use the following build settings. The repository’s `.node-version` selects Node 24. Set the pnpm build variable for production and preview builds.
+1. In the Cloudflare dashboard, open **Workers & Pages**, create a Worker from a Git repository, and select **arnavp103/local-hits**.
+2. On **Set up your application**, use project name `local-hits` and build command `pnpm build`. Keep the default deploy command `npx wrangler deploy` and preview command `npx wrangler preview`. Leave preview builds enabled for pull requests.
+3. Keep the build variables empty. The pnpm lockfile selects pnpm, `package.json` pins its version, and `.node-version` selects Node 24. The `npx` commands launch Cloudflare’s CLI.
+4. Click **Deploy**. Open the URL Cloudflare displays and try the Food tab and **Use my location**. Use `main` as the production branch for subsequent builds.
 
-   | Setting | Value |
-   | --- | --- |
-   | Project name | `local-hits` |
-   | Production branch | `main` |
-   | Framework preset | None |
-   | Build command | `pnpm build` |
-   | Build output directory | `dist` |
-   | Root directory | Leave blank (repository root) |
-   | Build environment variable | `PNPM_VERSION=12.21.0` |
+Wrangler serves the Vite output in `dist/` through Workers Static Assets. The app runs in the browser.
 
-4. Click **Save and Deploy**. Open the HTTPS URL Cloudflare shows when the build succeeds. Try a category and **Use my location** to check the published site.
-5. Future pushes to `main` deploy to production. Pull requests from other branches in the repository get preview deployments by default.
-
-The checked-in `wrangler.jsonc` identifies the Pages project and its static output. Pages builds and uploads the files through the GitHub integration. No application secrets or locally installed deployment CLI are required.
-
-[Cloudflare Pages Git setup](https://developers.cloudflare.com/pages/get-started/git-integration/) · [Build image versions](https://developers.cloudflare.com/pages/configuration/build-image/) · [Wrangler configuration](https://developers.cloudflare.com/pages/functions/wrangler-configuration/)
+[Workers build configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) · [Build tool versions](https://developers.cloudflare.com/workers/ci-cd/builds/build-image/)
 
 ## How nearby discovery works
 
