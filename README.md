@@ -6,18 +6,37 @@ A client-side neighbourhood field guide for food, nightlife and sights. It opens
 
 ## Develop
 
-Use Node 24 and npm.
+Use Node 24 and pnpm 12.21.0. With Node 24's Corepack available, run `corepack enable pnpm` once to use the version pinned in `package.json`.
 
 ```sh
-npm ci
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-`npm test` runs the distance, classification and catalogue regression tests. `npm run build` type-checks the project and writes a production site to `dist/`. Use `npm run preview` to inspect the build.
+Run `pnpm test` for regression tests, `pnpm build` for type checking and the production build, and `pnpm preview` to inspect the built site.
 
-## Cloudflare Pages
+## Deploy to Cloudflare Pages
 
-Connect this repository to a Pages project. Set the build command to `npm run build`, output directory to `dist`, and Node version to 24. Use the repository root as the build root. The site needs no Worker, database, secrets or runtime packages. Geolocation requires HTTPS or localhost.
+1. Open the [Cloudflare dashboard](https://dash.cloudflare.com/). Go to **Workers & Pages → Create application → Pages → Connect to Git**.
+2. Choose **GitHub**, authorize access to **arnavp103/local-hits**, select the repository and begin setup.
+3. Use the following build settings. The repository’s `.node-version` selects Node 24. Set the pnpm build variable for production and preview builds.
+
+   | Setting | Value |
+   | --- | --- |
+   | Project name | `local-hits` |
+   | Production branch | `main` |
+   | Framework preset | None |
+   | Build command | `pnpm build` |
+   | Build output directory | `dist` |
+   | Root directory | Leave blank (repository root) |
+   | Build environment variable | `PNPM_VERSION=12.21.0` |
+
+4. Click **Save and Deploy**. Open the HTTPS URL Cloudflare shows when the build succeeds. Try a category and **Use my location** to check the published site.
+5. Future pushes to `main` deploy to production. Pull requests from other branches in the repository get preview deployments by default.
+
+The checked-in `wrangler.jsonc` identifies the Pages project and its static output. Pages builds and uploads the files through the GitHub integration. No application secrets or locally installed deployment CLI are required.
+
+[Cloudflare Pages Git setup](https://developers.cloudflare.com/pages/get-started/git-integration/) · [Build image versions](https://developers.cloudflare.com/pages/configuration/build-image/) · [Wrangler configuration](https://developers.cloudflare.com/pages/functions/wrangler-configuration/)
 
 ## How nearby discovery works
 
