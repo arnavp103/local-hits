@@ -73,12 +73,8 @@
           >
         </div>
       </section>
-      <section
-        class="wrap starters"
-        id="starters"
-        aria-labelledby="start-heading"
-      >
-        <h2 id="start-heading">Try a starting point</h2>
+      <section class="starters" id="starters" aria-labelledby="start-heading">
+        <h2 class="wrap" id="start-heading">Try a starting point</h2>
         <div class="starter-list">
           <button data-start="london">
             <img
@@ -110,8 +106,8 @@
           </button>
         </div>
       </section>
-      <section class="guide wrap" id="guide" aria-labelledby="area-name" hidden>
-        <div class="section-line">
+      <section class="guide" id="guide" aria-labelledby="area-name" hidden>
+        <div class="wrap section-line">
           <div>
             <span class="section-label"
               ><span class="green-dot"></span> NEARBY GUIDE</span
@@ -125,15 +121,20 @@
         </div>
         <div class="tab-shelf">
           <div
-            class="tabs"
+            class="wrap tabs"
             role="group"
             aria-label="Filter places by category"
             id="tabs"
           ></div>
         </div>
-        <p id="count" class="count" role="status"></p>
-        <div id="service" role="status"></div>
-        <div id="cards" class="cards"></div>
+        <p id="count" class="wrap count" role="status"></p>
+        <div id="service" class="wrap" role="status"></div>
+        <div class="list-head" aria-hidden="true" hidden id="list-head">
+          <div class="wrap row-columns">
+            <span>Place</span><span>Why stop here</span><span>On foot</span>
+          </div>
+        </div>
+        <div id="places" class="places"></div>
         <button id="more" hidden>Show more places</button>
       </section>
     </main>

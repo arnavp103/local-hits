@@ -53,9 +53,9 @@ let loadFailed = false
 let loading = false
 let lookup = new AbortController()
 let results = new AbortController()
-const cards = select('cards')
+const rows = select('places')
 const status = select('search-status')
-const cardCache = new Map<Place, HTMLElement>()
+const rowCache = new Map<Place, HTMLElement>()
 const guide = select('guide')
 const query = select<HTMLInputElement>('query')
 const emptyFilter = () => {
@@ -63,38 +63,43 @@ const emptyFilter = () => {
   select('tabs').querySelector('button')?.focus()
 }
 
-function travelLabel(place: Place) {
-  const km = distance(area, place)
-  return '≈ ' + walkMinutes(km) + ' min walk · ' + formatDistance(km, unit)
-}
-function card(p: Place) {
-  const article = node('article', '', 'card')
+function placeRow(p: Place) {
+  const row = node('details', '', 'place-row')
+  const summary = node('summary', '', 'wrap row-columns')
+  const place = node('span', '', 'place-cell')
+  const thumb = node('span', '', 'thumb ' + (p.tags[0]?.toLowerCase() || ''))
   if (p.photo) {
-    const image = node('img', '', 'card-image')
+    const image = node('img')
     image.src = p.photo
     image.loading = 'lazy'
     image.decoding = 'async'
     image.alt = ''
-    article.append(image)
+    thumb.append(image)
+  } else {
+    thumb.append(symbol(p.tags[0] || 'pin'))
   }
-  const body = node('div', '', 'card-body')
-  const meta = node('div', '', 'metadata')
-  const dist = node('span', '', 'distance')
-  dist.title = 'Estimated walking time and straight-line distance'
-  dist.textContent = travelLabel(p)
-  meta.append(
-    node('span', p.kind, 'kind ' + (p.tags[0]?.toLowerCase() || '')),
-    dist,
+  const identity = node('span', '', 'identity')
+  const kind = node('span', p.kind, 'kind')
+  if (p.former) kind.prepend(node('b', 'Former venue · ', 'former'))
+  identity.append(kind, node('strong', p.title, 'place-title'))
+  place.append(thumb, identity)
+  const travel = node('span', '', 'travel')
+  const km = distance(area, p)
+  travel.append(
+    node('strong', '≈ ' + walkMinutes(km) + ' min'),
+    node('span', formatDistance(km, unit), 'distance'),
   )
-  body.append(meta, node('h3', p.title))
-  if (p.former) body.append(node('div', 'Former venue', 'former'))
+  travel.title = 'Estimated walking time and straight-line distance'
+  summary.append(
+    place,
+    node('span', p.brief, 'snippet'),
+    travel,
+    node('span', '', 'disclosure'),
+  )
+  const body = node('div', '', 'wrap row-detail')
   body.append(node('p', p.brief))
-  if (p.note) {
-    const details = node('details')
-    details.append(node('summary', 'Field note'), node('p', p.note))
-    body.append(details)
-  }
-  const links = node('div', '', 'card-links')
+  if (p.note) body.append(node('p', p.note))
+  const links = node('div', '', 'place-links')
   const wiki = link('Wikipedia', p.article)
   wiki.setAttribute('aria-label', p.title + ' on Wikipedia')
   const maps = link(
@@ -113,8 +118,8 @@ function card(p: Place) {
   maps.append(symbol('external'))
   links.append(wiki, maps)
   body.append(links)
-  article.append(body)
-  return article
+  row.append(summary, body)
+  return row
 }
 function render() {
   const visible =
@@ -133,20 +138,20 @@ function render() {
     walkLimitMinutes +
     ' min on foot · Nearest first'
   const shown = visible.slice(0, limit).map((place) => {
-    let el = cardCache.get(place)
+    let el = rowCache.get(place)
     if (!el) {
-      el = card(place)
-      cardCache.set(place, el)
+      el = placeRow(place)
+      rowCache.set(place, el)
     }
     return el
   })
   for (const [index, article] of shown.entries()) {
-    if (cards.children[index] !== article)
-      cards.insertBefore(article, cards.children[index] || null)
+    if (rows.children[index] !== article)
+      rows.insertBefore(article, rows.children[index] || null)
   }
-  while (cards.children.length > shown.length) cards.lastElementChild!.remove()
+  while (rows.children.length > shown.length) rows.lastElementChild!.remove()
   if (visible.length === 0 && !loading && !loadFailed) {
-    const box = node('div', '', 'empty')
+    const box = node('div', '', 'wrap empty')
     box.append(
       filter === 'All'
         ? 'No nearby places found. Try another neighbourhood.'
@@ -157,8 +162,9 @@ function render() {
       all.onclick = emptyFilter
       box.append(all)
     }
-    cards.append(box)
+    rows.append(box)
   }
+  select('list-head').hidden = visible.length === 0
   select('more').hidden = visible.length <= limit
 }
 function setFilter(next: Filter) {
@@ -177,7 +183,7 @@ select('more').onclick = () => {
   const previous = limit
   limit += 12
   render()
-  cards.children[previous]?.querySelector<HTMLElement>('summary, a')?.focus()
+  rows.children[previous]?.querySelector<HTMLElement>('summary, a')?.focus()
 }
 for (const u of ['km', 'mi'] as const)
   select(u).onclick = () => {
@@ -188,14 +194,17 @@ for (const u of ['km', 'mi'] as const)
 
 function updateUnit(next: Unit) {
   unit = next
-  for (const [place, el] of cardCache)
-    el.querySelector<HTMLElement>('.distance')!.textContent = travelLabel(place)
+  for (const [place, el] of rowCache)
+    el.querySelector<HTMLElement>('.distance')!.textContent = formatDistance(
+      distance(area, place),
+      unit,
+    )
 }
 function setArea(next: Area, focus = true) {
   results.abort()
   results = new AbortController()
   area = next
-  cardCache.clear()
+  rowCache.clear()
   select('starters').hidden = true
   guide.hidden = false
   query.value = next.name
